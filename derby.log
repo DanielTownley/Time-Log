@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Sun Aug 10 23:21:43 EDT 2014:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0147-c315-f811-000004a04ed0 
+Mon Aug 11 13:03:07 EDT 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0147-c605-fb66-000004a04ed0 
 on database directory /Users/danieltownley/Dev/TimeEnough/scheddb with class loader sun.misc.Launcher$ExtClassLoader@39172e08 
 Loaded from file:/Library/Java/Extensions/derby.jar
 java.vendor=Apple Inc.

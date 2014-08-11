@@ -11,14 +11,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 
-class recordViewPanel extends JPanel
+class ViewPanel extends JPanel
 {
 	private Session session;
 	private DBTableModel dbtm = null;
 	private Connection conn;
 	private final SimpleDateFormat TIME_DISPLAY_FORMAT = new SimpleDateFormat( "HH:mm");
 	
-	recordViewPanel(Session session)
+	ViewPanel(Session session)
 	{
 		this.session = session;
 		final int ROWS = 1;
@@ -56,7 +56,7 @@ class recordViewPanel extends JPanel
 			// Set Model to be an instance of
 			//the non-editable subclass, DBTableModel.
 			dbtm = new DBTableModel();
-			dbtm.setColumnCount(3);
+			dbtm.setColumnCount(4);
 
 			table = new JTable(dbtm);
 			scrollPane = new JScrollPane(table);
@@ -68,12 +68,15 @@ class recordViewPanel extends JPanel
 				String[] rowData = new String[3];
 				
 				// render the date as 
-				rowData[0] = results.getString(1);
-								
+					
+				rowData[0] = results.getString(4);
+				
 				rowData[1] = TIME_DISPLAY_FORMAT.format( results.getLong(2) * 1000 );
 
 				rowData[2] = TIME_DISPLAY_FORMAT.format( ( results.getLong(2) 
 						+ results.getLong(3) ) * 1000 );
+							
+				rowData[3] = results.getString(5);
 				
 				dbtm.addRow(rowData);
 			}

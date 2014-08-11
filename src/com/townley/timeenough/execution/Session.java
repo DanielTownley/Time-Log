@@ -12,8 +12,8 @@ public class Session
 	
 	// Variables declared
 	private MainWindow mainWin;
-	private recordViewPanel viewPanel;
-	private NewBlockPanel inputBar;
+	private ViewPanel viewPanel;
+	private InputBarPanel inputBar;
 	private Connection conn;	
 	private Statement statement;
 	
@@ -32,8 +32,8 @@ public class Session
 		
 		// Innitialize the session's windows: 
 		this.mainWin = new MainWindow();
-		this.viewPanel = new recordViewPanel(this);
-		this.inputBar = new NewBlockPanel(this);
+		this.viewPanel = new ViewPanel(this);
+		this.inputBar = new InputBarPanel(this);
 		
 		// Set up the windows.
 		Dimension D = new Dimension(99999, 500);
@@ -51,12 +51,12 @@ public class Session
 		return this.mainWin;
 	}
 	
-	public recordViewPanel getViewPannel()
+	public ViewPanel getViewPannel()
 	{
 		return this.viewPanel;
 	}
 	
-	public NewBlockPanel getInputBar()
+	public InputBarPanel getInputBar()
 	{
 		return this.inputBar;
 	}

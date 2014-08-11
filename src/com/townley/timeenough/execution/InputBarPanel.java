@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import com.townley.timeenough.util.*;
-public class NewBlockPanel extends JPanel
+public class InputBarPanel extends JPanel
 {
 	Session session;
 	Connection conn; // Connection to db that gets data from this panel.
@@ -20,9 +20,11 @@ public class NewBlockPanel extends JPanel
     JTextField dateField = new JTextField(8);     // initialize to current date	
     JTextField startTimeField = new JTextField(8);// initialize this to end time of last entry
     JTextField endTimeField = new JTextField(8);  // initialize this to current time.
+    JTextField typeField = new JTextField(12); 
+    JTextArea commentArea = new JTextArea(16, 8);
+    
     JPanel tempJ = this;  // A reference to this object that can be passed to inner classes.
     
-  
     final String UI_TIME_ERROR = "Sorry, the time you entered doesn't exist";
     private final SimpleDateFormat TIME_DISPLAY_FORMAT = new SimpleDateFormat( "HH:mm");
     
@@ -30,8 +32,52 @@ public class NewBlockPanel extends JPanel
      * A Hopefully convenient constructor that gives this window a db to write to.
      * @param conn A Connection to the database to which this window should write. 
      */
-
     
+    public InputBarPanel(Session session)
+    {
+    	String APPEND_BUTTON_STRING = new String("Append");
+    	Dimension D = new Dimension(99999, 60);
+    	// can we create a db?
+    	this.session = session;
+		this.conn = session.getConnection();
+	
+		try
+		{
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+			System.out.println("Success!");
+		}
+		catch(java.lang.ClassNotFoundException e)
+		{
+			System.err.print("ClassNotFoundException");
+			System.err.println(e.getMessage());
+		}
+		
+		// Innitialize Textfields
+	
+		// a Button.
+		JButton appendBlock = new JButton(APPEND_BUTTON_STRING);
+
+		// Initialize the panel's properties
+		this.setLayout( new FlowLayout() );
+		this.setPreferredSize(D);
+		this.setMaximumSize(D);
+	        
+		// Set the behavior of the appendBlock button by giving it an anonymous actionlistenter.
+		appendBlock.addActionListener( new AddButtonListener() );
+	
+		// Add text fields and buttons
+		this.add(typeField);
+		this.add(dateField);
+		this.add(startTimeField);
+		this.add(endTimeField);
+		
+		this.add(appendBlock);
+		
+		this.add(commentArea);
+	
+	
+
+    }
     
     private class AddButtonListener implements ActionListener
     {	
@@ -81,21 +127,22 @@ public class NewBlockPanel extends JPanel
 		    	int duration = (int) ( endTime.getTime() - startTime.getTime() ) / 1000;	    			    			    	
 
 		    	// Add a new row to the database.
-		    	addDBRow(startSecond, duration);
+		    	addDBRow( startSecond, duration, typeField.getText(), commentArea.getText() );
 		    	
 		    	// Also add this data to the table model in the same session
 				// without reading the DB.
-				String[] rowData = new String[3];
-				rowData[0] = "-";
+				String[] rowData = new String[4];
+				rowData[0] = typeField.getText();
 				rowData[1] = TIME_DISPLAY_FORMAT.format( startSecond * 1000 );
 				rowData[2] = TIME_DISPLAY_FORMAT.format( ( startSecond + duration ) * 1000 );
+				rowData[3] = commentArea.getText();
 				
 				// With a single line of code, we add a row to the table!
 				session.getViewPannel().getTableModel().addRow(rowData);	    	
 		    }
 	    }
 
-		private void addDBRow(long startSecond, int duration) 
+		private void addDBRow(long startSecond, int duration, String title, String comment) 
 		{
 			// allocate a statement object
 			Statement stmt = null;
@@ -114,7 +161,10 @@ public class NewBlockPanel extends JPanel
 				stmt.executeUpdate("INSERT into records values ("
 						+ "DEFAULT, "
 						+ String.valueOf(startSecond) + ", " 
-						+ String.valueOf(duration) + ")");
+						+ String.valueOf(duration) + ", "
+						+ title + ", "
+						+ comment + ")" );
+				
 				ResultSet results = stmt.executeQuery("SELECT * FROM records");				
 			}
 			catch (SQLException e1) 
@@ -123,46 +173,6 @@ public class NewBlockPanel extends JPanel
 				e1.printStackTrace();
 			}
 		}	
-    }
-    
-    public NewBlockPanel(Session session)
-    {
-    	String APPEND_BUTTON_STRING = new String("Append");
-    	Dimension D = new Dimension(99999, 60);
-    	// can we create a db?
-    	this.session = session;
-		this.conn = session.getConnection();
-	
-		try
-		{
-			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-			System.out.println("Success!");
-		}
-		catch(java.lang.ClassNotFoundException e)
-		{
-			System.err.print("ClassNotFoundException");
-			System.err.println(e.getMessage());
-		}
-		
-		// Innitialize Textfields
-	
-		// a Button.
-		JButton appendBlock = new JButton(APPEND_BUTTON_STRING);
-
-		// Initialize the panel's properties
-		this.setLayout( new FlowLayout() );
-		this.setPreferredSize(D);
-		this.setMaximumSize(D);
-	        
-		// Set the behavior of the appendBlock button by giving it an anonymous actionlistenter.
-		appendBlock.addActionListener( new AddButtonListener() );
-	
-		// Add text fields and buttons
-		this.add(dateField);
-		this.add(startTimeField);
-		this.add(endTimeField);
-		this.add(appendBlock);
-
     }
     
 }

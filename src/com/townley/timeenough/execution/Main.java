@@ -28,7 +28,12 @@ public class Main
     	final String TABLES_IF_NEEDED = "CREATE TABLE records (" 
     			+ "ID INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
     			+ "TIMESTAMP BIGINT NOT NULL, "
-    			+ "DURATION INT NOT NULL)";    	
+    			+ "DURATION INT NOT NULL, "
+    			+ "TYPE VARCHAR(32), "
+    			+ "DESCRIPTION VARCHAR(140)"
+    			+ ")";
+    			
+    			
     	Connection conn = null;
     		    
     	// Attempt to connect to the create and connect to database.	
@@ -45,24 +50,30 @@ public class Main
 		
 		Connection conn = null;
 		
-		try {
+		try 
+		{	
 			conn = DriverManager.getConnection(URL);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		}
+		catch (SQLException e) 
+		{
 			e.printStackTrace();
 		}
 		
-		try {
+		try 
+		{
 			stmt = conn.createStatement();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} 
+		catch (SQLException e) 
+		{
 			e.printStackTrace();
 		}
 		
-		try {
+		try 
+		{
 			stmt.execute(TABLES);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} 
+		catch (SQLException e) 
+		{
 			e.printStackTrace();
 		}
 		

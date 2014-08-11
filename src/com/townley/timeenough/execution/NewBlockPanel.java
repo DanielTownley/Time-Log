@@ -35,19 +35,17 @@ public class NewBlockPanel extends JPanel
     
     private class AddButtonListener implements ActionListener
     {	
+    	// These are the formats SDF's the user must use. 
+	    SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
+	    SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
+	    
 	    public void actionPerformed(ActionEvent e)
-	    { 
-	    	
-	    	
+	    { 	    	
 		    // get the strings to be added to the database...
 		    String dateStr = dateField.getText();
 		    String startTimeStr = startTimeField.getText();
 		    String endTimeStr = endTimeField.getText();
-		    
-		    // These are the formats SDF's the user must use. 
-		    SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
-		    SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
-		    
+		    	   
 		    // Date to indicate the start day (00:00 on that day)
 		    Date date = null;
 		    
@@ -80,48 +78,51 @@ public class NewBlockPanel extends JPanel
 		    {	
 		    	// Calculate the startSecond and duration of the block, and write them to the db.
 		    	long startSecond = ( startTime.getTime() / 1000l ) + ( date.getTime() / 1000l ) ; 		    	
-		    	int duration = (int) ( endTime.getTime() - startTime.getTime() ) / 1000;	    			    	
-		    	
+		    	int duration = (int) ( endTime.getTime() - startTime.getTime() ) / 1000;	    			    			    	
 
-		    	// allocate a statement object
-		    	Statement stmt = null;
-		    	try 
-		    	{
-					stmt = conn.createStatement();
-		    	} 
-		    	catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-		    			    	
-		    	try 
-		    	{
-		    		// Insert UI'd data to DB.
-					stmt.executeUpdate("INSERT into records values ("
-							+ "DEFAULT, "
-							+ String.valueOf(startSecond) + ", " 
-							+ String.valueOf(duration) + ")");
-					ResultSet results = stmt.executeQuery("SELECT * FROM records");
-
-					// Also add this data to the table model in the same session
-					// without reading the DB.
-					String[] rowData = new String[3];
-					rowData[0] = "-";
-					rowData[1] = TIME_DISPLAY_FORMAT.format( startSecond * 1000 );
-					rowData[2] = TIME_DISPLAY_FORMAT.format( ( startSecond + duration ) * 1000 );
-					
-					// With a single line of code, we add a row to the table!
-					session.getViewPannel().getTableModel().addRow(rowData);
-					
-				}
-		    	catch (SQLException e1) {
-					
-					e1.printStackTrace();
-				}
+		    	// Add a new row to the database.
+		    	addDBRow(startSecond, duration);
 		    	
-		    	
+		    	// Also add this data to the table model in the same session
+				// without reading the DB.
+				String[] rowData = new String[3];
+				rowData[0] = "-";
+				rowData[1] = TIME_DISPLAY_FORMAT.format( startSecond * 1000 );
+				rowData[2] = TIME_DISPLAY_FORMAT.format( ( startSecond + duration ) * 1000 );
+				
+				// With a single line of code, we add a row to the table!
+				session.getViewPannel().getTableModel().addRow(rowData);	    	
 		    }
-	    }	
+	    }
+
+		private void addDBRow(long startSecond, int duration) 
+		{
+			// allocate a statement object
+			Statement stmt = null;
+			try 
+			{
+				stmt = conn.createStatement();
+			} 
+			catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+					    	
+			try 
+			{
+				// Insert UI'd data to DB.
+				stmt.executeUpdate("INSERT into records values ("
+						+ "DEFAULT, "
+						+ String.valueOf(startSecond) + ", " 
+						+ String.valueOf(duration) + ")");
+				ResultSet results = stmt.executeQuery("SELECT * FROM records");				
+			}
+			catch (SQLException e1) 
+			{
+				
+				e1.printStackTrace();
+			}
+		}	
     }
     
     public NewBlockPanel(Session session)
@@ -150,7 +151,6 @@ public class NewBlockPanel extends JPanel
 
 		// Initialize the panel's properties
 		this.setLayout( new FlowLayout() );
-		//this.setBackground(Color.BLACK);
 		this.setPreferredSize(D);
 		this.setMaximumSize(D);
 	        
@@ -165,9 +165,5 @@ public class NewBlockPanel extends JPanel
 
     }
     
-    public void addTableModel(DefaultTableModel tm)
-    {
-    	this.tm = tm;
-    }
 }
  

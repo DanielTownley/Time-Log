@@ -1,5 +1,7 @@
 package com.townley.timeenough.execution;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -28,8 +30,19 @@ public class Session
 		// Assign the connection passed as a parameter.
 		this.conn = conn;
 		
-		this.mainWin = new MainWindow(this);
+		// Innitialize the session's windows: 
+		this.mainWin = new MainWindow();
 		this.viewPanel = new recordViewPanel(this);
+		this.inputBar = new NewBlockPanel(this);
+		
+		// Set up the windows.
+		Dimension D = new Dimension(99999, 500);
+	    viewPanel.setBackground(Color.RED);
+	    viewPanel.setPreferredSize(D);
+		mainWin.add(viewPanel);
+		mainWin.add(inputBar);	
+		mainWin.repaint();   
+		mainWin.setVisible(true);
 		
 	}
 	
@@ -41,6 +54,11 @@ public class Session
 	public recordViewPanel getViewPannel()
 	{
 		return this.viewPanel;
+	}
+	
+	public NewBlockPanel getInputBar()
+	{
+		return this.inputBar;
 	}
 	
 	public Connection getConnection()

@@ -1,0 +1,92 @@
+package com.townley.timeenough.execution;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
+
+import java.awt.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+class recordViewPanel extends JPanel
+{
+	DBTableModel dbtm = null;
+
+	Connection conn;
+	recordViewPanel(Connection conn)
+	{
+		final int ROWS = 1;
+		final int COLUMNS = 1;
+		String querry = "SELECT * FROM records";
+		
+		this.conn = conn;
+		ResultSet results = null;
+		this.setLayout(new GridLayout(ROWS, COLUMNS));
+		
+		Statement stmt = null;
+		
+		// Attempt to create a statement to interface with the conn.
+		try 
+		{
+			stmt = conn.createStatement();
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		JTable table = null;
+		
+		// try to get results and display them in the spread.
+		try 
+		{	
+			results = stmt.executeQuery(querry);
+			String[] headings = {"ID", "Start Time", "Duration"};
+			
+			
+			// Set Model to non-editable.
+			dbtm = new DBTableModel();
+			dbtm.setColumnCount(3);
+			dbtm.setRowCount(8);
+			table = new JTable(dbtm);
+			
+			
+			//Render the DB.
+			for(int i = 0; results.next() && i < table.getRowCount(); i++)
+			{
+				for(int j = 0;  j < table.getColumnCount() ; j++)
+				{
+					table.setValueAt(results.getString(j + 1), i, j);
+				}
+			}
+			this.add(table);
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	public class DBTableModel extends DefaultTableModel 
+	{
+		public boolean isCellEditable(int row, int column)
+		{  
+	          return false;  
+	    }
+
+	}
+	
+	public DefaultTableModel getTableModel()
+	{
+		return this.dbtm;
+	}
+	
+	
+}
+

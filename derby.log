@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Tue Jul 29 15:56:56 EDT 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0147-83b2-715e-0000049fd3e8 
+on database directory /Users/danieltownley/Dev/TimeEnough/scheddb with class loader sun.misc.Launcher$ExtClassLoader@39172e08 
+Loaded from file:/Library/Java/Extensions/derby.jar
+java.vendor=Apple Inc.
+java.runtime.version=1.6.0_51-b11-457-10M4509
+user.dir=/Users/danieltownley/Dev/TimeEnough
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.6.8
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
